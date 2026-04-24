@@ -19,4 +19,7 @@ public interface Gear360Api {
 
     @POST("/osc/commands/execute")
     Call<MediaListResponse> listFiles(@retrofit2.http.Body com.example.gear360.model.OscCommand command);
+
+    @POST("/osc/commands/execute")
+    Call<okhttp3.ResponseBody> takePicture(@retrofit2.http.Body com.example.gear360.model.OscCommand command);
 }
