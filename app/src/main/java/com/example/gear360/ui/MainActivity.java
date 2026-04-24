@@ -3,7 +3,9 @@ package com.example.gear360.ui;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,12 +16,15 @@ import com.example.gear360.R;
 import com.example.gear360.model.CameraInfo;
 import com.example.gear360.network.Gear360Api;
 import com.example.gear360.network.RetrofitClient;
+import com.example.gear360.network.WifiConnectionManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    private TextView btnConnect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout menuGallery = findViewById(R.id.menuGallery);
         LinearLayout menuSettings = findViewById(R.id.menuSettings);
-        TextView btnConnect = findViewById(R.id.btnConnect);
+        btnConnect = findViewById(R.id.btnConnect);
         TextView tvConnectingDots = findViewById(R.id.tvConnectingDots);
 
         menuGallery.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, GalleryActivity.class)));
@@ -37,43 +42,69 @@ public class MainActivity extends AppCompatActivity {
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnConnect.setText("Connecting...");
+                promptForCameraPassword();
+            }
+        });
+    }
 
-                Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
+    private void promptForCameraPassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Camera Password");
+        builder.setMessage("Enter the 8-digit password shown on your Gear 360 screen.");
 
-                api.getCameraInfo().enqueue(new Callback<CameraInfo>() {
-                    @Override
-                    public void onResponse(Call<CameraInfo> call, Response<CameraInfo> response) {
-                        btnConnect.setText("Get connected");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
 
-                        if (response.isSuccessful() && response.body() != null) {
-                            CameraInfo info = response.body();
-                            showSuccessDialog(info);
-                        } else {
-                            Toast.makeText(MainActivity.this, "Error reading from camera. Is it turned on?", Toast.LENGTH_LONG).show();
-                        }
-                    }
+        builder.setPositiveButton("Connect", (dialog, which) -> {
+            String password = input.getText().toString();
+            if (password.length() >= 8) {
+                startWifiConnection(password);
+            } else {
+                Toast.makeText(this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-                    @Override
-                    public void onFailure(Call<CameraInfo> call, Throwable t) {
-                        btnConnect.setText("Get connected");
-                        Toast.makeText(MainActivity.this, "Connection failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    private void startWifiConnection(String password) {
+        btnConnect.setText("Connecting...");
+
+        WifiConnectionManager.connectToGear360(this, password, new WifiConnectionManager.ConnectionCallback() {
+            @Override
+            public void onConnected() {
+                runOnUiThread(() -> {
+                    btnConnect.setText("Connected!");
+                    fetchCameraInfo();
+                });
+            }
+
+            @Override
+            public void onFailed(String reason) {
+                runOnUiThread(() -> {
+                    btnConnect.setText("Get connected");
+                    Toast.makeText(MainActivity.this, reason, Toast.LENGTH_SHORT).show();
                 });
             }
         });
     }
 
-    private void showSuccessDialog(CameraInfo info) {
-        String details = "Manufacturer: " + info.getManufacturer() + "\n"
-                + "Model: " + info.getModel() + "\n"
-                + "Firmware: " + info.getFirmwareVersion() + "\n"
-                + "Serial: " + info.getSerialNumber();
+    private void fetchCameraInfo() {
+        Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
+        api.getCameraInfo().enqueue(new Callback<CameraInfo>() {
+            @Override
+            public void onResponse(Call<CameraInfo> call, Response<CameraInfo> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(MainActivity.this, "Successfully linked to: " + response.body().getModel(), Toast.LENGTH_LONG).show();
+                }
+            }
 
-        new AlertDialog.Builder(this)
-                .setTitle("Connected Successfully!")
-                .setMessage(details)
-                .setPositiveButton("OK", null)
-                .show();
+            @Override
+            public void onFailure(Call<CameraInfo> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Wi-Fi connected, but API failed.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
