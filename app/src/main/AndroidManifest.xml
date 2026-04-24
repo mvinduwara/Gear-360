@@ -30,6 +30,7 @@
 
         <activity android:name=".ui.GalleryActivity" android:exported="false" />
         <activity android:name=".ui.SettingsActivity" android:exported="false" />
+        <activity android:name=".ui.FullScreenActivity" android:exported="false" />
     </application>
 
 </manifest>
