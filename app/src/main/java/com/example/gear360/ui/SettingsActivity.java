@@ -63,4 +63,9 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void resetSavedData() {
+        getSharedPreferences("Gear360Prefs", MODE_PRIVATE).edit().clear().apply();
+        Toast.makeText(this, "Connection data cleared", Toast.LENGTH_SHORT).show();
+    }
 }
