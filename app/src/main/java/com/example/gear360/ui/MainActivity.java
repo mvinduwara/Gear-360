@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout menuSettings = findViewById(R.id.menuSettings);
         btnConnect = findViewById(R.id.btnConnect);
         TextView tvConnectingDots = findViewById(R.id.tvConnectingDots);
+        android.widget.Button btnCapture = findViewById(R.id.btnCapture);
+
 
         menuGallery.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, GalleryActivity.class)));
         menuSettings.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SettingsActivity.class)));
@@ -44,6 +46,27 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 promptForCameraPassword();
             }
+        });
+
+        btnCapture.setOnClickListener(v -> {
+            btnCapture.setText("Capturing...");
+            Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
+            com.example.gear360.model.OscCommand command = new com.example.gear360.model.OscCommand("camera.takePicture");
+
+            api.takePicture(command).enqueue(new Callback<okhttp3.ResponseBody>() {
+                @Override
+                public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                    btnCapture.setText("Take Photo");
+                    if (response.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, "Snap!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                    btnCapture.setText("Take Photo");
+                    Toast.makeText(MainActivity.this, "Failed to capture", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 

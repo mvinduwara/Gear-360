@@ -11,4 +11,6 @@
     <string name="firmware_version">Firmware version</string>
     <string name="gallery_settings">Gallery settings</string>
     <string name="about_app">About Gear 360 App</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="textline">- - - - -</string>
 </resources>

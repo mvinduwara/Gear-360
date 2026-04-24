@@ -52,7 +52,7 @@
             android:id="@+id/tvConnectingDots"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="- - - - -"
+            android:text="@string/textline"
             android:textColor="@color/text_gray"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@+id/iconPhone"
@@ -178,5 +178,13 @@
 
         <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="48dp" android:background="@color/divider_gray" />
 
+        <Button
+            android:id="@+id/btnCapture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/take_photo"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="20dp"/>
     </LinearLayout>
 </LinearLayout>
