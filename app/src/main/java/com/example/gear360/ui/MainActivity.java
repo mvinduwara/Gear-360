@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,12 +15,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.gear360.R;
-import com.example.gear360.model.CameraInfo;
+import com.example.gear360.model.OscCommand;
 import com.example.gear360.network.Gear360Api;
 import com.example.gear360.network.MjpegStreamer;
 import com.example.gear360.network.RetrofitClient;
 import com.example.gear360.network.WifiConnectionManager;
 
+import java.io.InputStream;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,37 +40,33 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout menuGallery = findViewById(R.id.menuGallery);
         LinearLayout menuSettings = findViewById(R.id.menuSettings);
         btnConnect = findViewById(R.id.btnConnect);
-        TextView tvConnectingDots = findViewById(R.id.tvConnectingDots);
-        android.widget.Button btnCapture = findViewById(R.id.btnCapture);
-
+        Button btnCapture = findViewById(R.id.btnCapture);
 
         menuGallery.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, GalleryActivity.class)));
         menuSettings.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SettingsActivity.class)));
 
-        btnConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                promptForCameraPassword();
-            }
-        });
-
+        btnConnect.setOnClickListener(v -> promptForCameraPassword());
+        
         btnCapture.setOnClickListener(v -> {
             btnCapture.setText("Capturing...");
             Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
-            com.example.gear360.model.OscCommand command = new com.example.gear360.model.OscCommand("camera.takePicture");
+            OscCommand command = new OscCommand("camera.takePicture");
 
-            api.takePicture(command).enqueue(new Callback<okhttp3.ResponseBody>() {
+            api.takePicture(command).enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     btnCapture.setText("Take Photo");
                     if (response.isSuccessful()) {
                         Toast.makeText(MainActivity.this, "Snap!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Capture failed.", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
-                public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
                     btnCapture.setText("Take Photo");
-                    Toast.makeText(MainActivity.this, "Failed to capture", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -109,46 +109,38 @@ public class MainActivity extends AppCompatActivity {
                     startLivePreview();
                 });
             }
-        });
-    }
-
-    private void fetchCameraInfo() {
-        Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
-        api.getCameraInfo().enqueue(new Callback<CameraInfo>() {
-            @Override
-            public void onResponse(Call<CameraInfo> call, Response<CameraInfo> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(MainActivity.this, "Successfully linked to: " + response.body().getModel(), Toast.LENGTH_LONG).show();
-                }
-            }
 
             @Override
-            public void onFailure(Call<CameraInfo> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Wi-Fi connected, but API failed.", Toast.LENGTH_SHORT).show();
+            public void onFailed(String reason) {
+                runOnUiThread(() -> {
+                    btnConnect.setText("Get connected");
+                    Toast.makeText(MainActivity.this, reason, Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
 
     private void startLivePreview() {
         Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
-        com.example.gear360.model.OscCommand command = new com.example.gear360.model.OscCommand("camera.getLivePreview");
+        OscCommand command = new OscCommand("camera.getLivePreview");
 
-        api.getLivePreview(command).enqueue(new Callback<okhttp3.ResponseBody>() {
+        api.getLivePreview(command).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
-                    java.io.InputStream stream = response.body().byteStream();
-
+                    InputStream stream = response.body().byteStream();
                     ImageView imgLivePreview = findViewById(R.id.imgLivePreview);
+
                     MjpegStreamer streamer = new MjpegStreamer(stream, imgLivePreview, MainActivity.this);
                     streamer.start();
+                } else {
+                    Toast.makeText(MainActivity.this, "Failed to load stream.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Failed to start live view", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Stream connection failed.", Toast.LENGTH_SHORT).show();
             }
         });
     }
