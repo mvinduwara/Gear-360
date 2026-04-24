@@ -1,4 +1,4 @@
-package com.example.gear360.ui;
+package com.example.gear360.utils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
