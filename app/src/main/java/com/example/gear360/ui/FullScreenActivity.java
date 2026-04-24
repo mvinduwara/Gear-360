@@ -19,6 +19,16 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.gear360.R;
 import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 
+import android.app.AlertDialog;
+import com.example.gear360.model.OscCommand;
+import com.example.gear360.network.Gear360Api;
+import com.example.gear360.network.RetrofitClient;
+import java.util.Arrays;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class FullScreenActivity extends AppCompatActivity {
 
     private String imageUrl;
@@ -31,6 +41,7 @@ public class FullScreenActivity extends AppCompatActivity {
 
         vrPanoramaView = findViewById(R.id.vrPanoramaView);
         Button btnDownload = findViewById(R.id.btnDownload);
+        Button btnDelete = findViewById(R.id.btnDelete);
 
         imageUrl = getIntent().getStringExtra("IMAGE_URL");
 
@@ -39,6 +50,7 @@ public class FullScreenActivity extends AppCompatActivity {
         }
 
         btnDownload.setOnClickListener(v -> downloadImage());
+        btnDelete.setOnClickListener(v -> confirmDeletion());
     }
 
     private void load360Image(String url) {
@@ -102,5 +114,42 @@ public class FullScreenActivity extends AppCompatActivity {
     protected void onDestroy() {
         if (vrPanoramaView != null) vrPanoramaView.shutdown();
         super.onDestroy();
+    }
+
+    private void confirmDeletion() {
+        if (imageUrl == null) return;
+
+        new AlertDialog.Builder(this)
+                .setTitle("Delete File")
+                .setMessage("Are you sure you want to permanently delete this photo from the Gear 360?")
+                .setPositiveButton("Delete", (dialog, which) -> executeDelete())
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void executeDelete() {
+        Toast.makeText(this, "Deleting...", Toast.LENGTH_SHORT).show();
+
+        Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
+        OscCommand command = new OscCommand("camera.delete");
+
+        command.addParameter("fileUrls", Arrays.asList(imageUrl));
+
+        api.deleteFile(command).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(FullScreenActivity.this, "Deleted successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(FullScreenActivity.this, "Failed to delete", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(FullScreenActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -14,4 +14,6 @@
     <string name="take_photo">Take Photo</string>
     <string name="textline">- - - - -</string>
     <string name="save_to_phone">Save to Phone</string>
+    <string name="save_to_phone_btn">Save to Phone</string>
+    <string name="delete">Delete</string>
 </resources>
