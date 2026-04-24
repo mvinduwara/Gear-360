@@ -31,59 +31,59 @@
             app:tint="@color/gear_orange" />
     </RelativeLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/white"
-        android:paddingBottom="16dp">
+        android:layout_height="250dp"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp">
 
-        <ImageView
-            android:id="@+id/iconPhone"
-            android:layout_width="60dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="64dp"
-            android:src="@android:drawable/ic_menu_crop"
-            app:tint="@color/gear_orange"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black">
 
-        <TextView
-            android:id="@+id/tvConnectingDots"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/textline"
-            android:textColor="@color/text_gray"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="@+id/iconPhone"
-            app:layout_constraintEnd_toStartOf="@+id/iconCamera"
-            app:layout_constraintStart_toEndOf="@+id/iconPhone"
-            app:layout_constraintTop_toTopOf="@+id/iconPhone" />
+            <ImageView
+                android:id="@+id/imgLivePreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="invisible" />
 
-        <ImageView
-            android:id="@+id/iconCamera"
-            android:layout_width="60dp"
-            android:layout_height="100dp"
-            android:layout_marginEnd="64dp"
-            android:src="@android:drawable/ic_menu_camera"
-            app:tint="@color/text_gray"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <LinearLayout
+                android:id="@+id/layoutConnectionUI"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/white">
 
-        <TextView
-            android:id="@+id/btnConnect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/get_connected"
-            android:textColor="@color/gear_orange"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/iconCamera"
-            app:layout_constraintStart_toStartOf="@+id/iconCamera" />
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@android:drawable/ic_menu_camera"
+                    app:tint="@color/gear_orange"
+                    android:layout_marginBottom="16dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/btnConnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/get_connected"
+                    android:textColor="@color/gear_orange"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btnCapture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take Photo"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -178,13 +178,5 @@
 
         <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="48dp" android:background="@color/divider_gray" />
 
-        <Button
-            android:id="@+id/btnCapture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/take_photo"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="20dp"/>
     </LinearLayout>
 </LinearLayout>

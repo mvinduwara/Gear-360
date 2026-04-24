@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.gear360.R;
 import com.example.gear360.model.CameraInfo;
 import com.example.gear360.network.Gear360Api;
+import com.example.gear360.network.MjpegStreamer;
 import com.example.gear360.network.RetrofitClient;
 import com.example.gear360.network.WifiConnectionManager;
 
@@ -100,15 +102,11 @@ public class MainActivity extends AppCompatActivity {
             public void onConnected() {
                 runOnUiThread(() -> {
                     btnConnect.setText("Connected!");
-                    fetchCameraInfo();
-                });
-            }
 
-            @Override
-            public void onFailed(String reason) {
-                runOnUiThread(() -> {
-                    btnConnect.setText("Get connected");
-                    Toast.makeText(MainActivity.this, reason, Toast.LENGTH_SHORT).show();
+                    findViewById(R.id.layoutConnectionUI).setVisibility(View.GONE);
+                    findViewById(R.id.imgLivePreview).setVisibility(View.VISIBLE);
+
+                    startLivePreview();
                 });
             }
         });
@@ -127,6 +125,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<CameraInfo> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Wi-Fi connected, but API failed.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void startLivePreview() {
+        Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
+        com.example.gear360.model.OscCommand command = new com.example.gear360.model.OscCommand("camera.getLivePreview");
+
+        api.getLivePreview(command).enqueue(new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    java.io.InputStream stream = response.body().byteStream();
+
+                    ImageView imgLivePreview = findViewById(R.id.imgLivePreview);
+                    MjpegStreamer streamer = new MjpegStreamer(stream, imgLivePreview, MainActivity.this);
+                    streamer.start();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Failed to start live view", Toast.LENGTH_SHORT).show();
             }
         });
     }
