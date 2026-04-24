@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:background="@color/background_light">
 
     <RelativeLayout
@@ -41,6 +42,26 @@
 
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider_gray" />
 
+        <LinearLayout
+            android:id="@+id/rowResetConnection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/reset_camera_connection"
+                android:textSize="18sp"
+                android:textColor="@android:color/holo_red_dark" />
+
+        </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +84,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="R210GLU0AQK1"
+                    android:text="@string/r210glu0aqk1"
                     android:textColor="@color/text_gray"
                     android:layout_marginEnd="4dp"/>
 
@@ -122,7 +143,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Latest version"
+                    android:text="@string/latest_version"
                     android:textColor="@color/text_gray"
                     android:layout_marginEnd="4dp"/>
 
@@ -143,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="Battery Level"
+                android:text="@string/battery_level"
                 android:textColor="@color/text_dark"
                 android:textSize="16sp" />
 
@@ -152,13 +173,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Fetching..."
+                android:text="@string/fetching"
                 android:textColor="@color/gear_orange"
                 android:textStyle="bold" />
         </RelativeLayout>
 
         <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="16dp" android:background="@color/divider_gray" />
 
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider_gray" />
     </LinearLayout>
 </LinearLayout>

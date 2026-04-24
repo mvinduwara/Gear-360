@@ -38,11 +38,9 @@ public class GalleryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewMedia);
         emptyStateLayout = findViewById(R.id.emptyStateLayout);
 
-        // Setup 3-column grid
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         btnBack.setOnClickListener(v -> finish());
-
         fetchCameraFiles();
     }
 

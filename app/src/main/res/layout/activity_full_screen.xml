@@ -15,12 +15,25 @@
         android:layout_alignParentBottom="true"
         android:padding="16dp"
         android:gravity="center"
+        android:orientation="horizontal"
         android:background="#88000000">
 
         <Button
             android:id="@+id/btnDownload"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/save_to_phone" />
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/save_to_phone_btn" />
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:textColor="#FFFFFF"
+            android:text="@string/delete" />
     </LinearLayout>
 </RelativeLayout>

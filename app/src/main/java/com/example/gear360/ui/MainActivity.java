@@ -20,6 +20,7 @@ import com.example.gear360.network.Gear360Api;
 import com.example.gear360.network.MjpegStreamer;
 import com.example.gear360.network.RetrofitClient;
 import com.example.gear360.network.WifiConnectionManager;
+import com.example.gear360.utils.Constants;
 
 import java.io.InputStream;
 
@@ -31,6 +32,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private TextView btnConnect;
+    private MjpegStreamer mjpegStreamer;
+    private boolean isCameraConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         menuSettings.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SettingsActivity.class)));
 
         btnConnect.setOnClickListener(v -> promptForCameraPassword());
-        
+
         btnCapture.setOnClickListener(v -> {
             btnCapture.setText("Capturing...");
             Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
@@ -69,6 +72,15 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
                 }
             });
+        });
+
+        btnConnect.setOnClickListener(v -> {
+            String savedPassword = Constants.getSavedPassword(this);
+            if (savedPassword != null) {
+                startWifiConnection(savedPassword);
+            } else {
+                promptForCameraPassword();
+            }
         });
     }
 
@@ -100,12 +112,12 @@ public class MainActivity extends AppCompatActivity {
         WifiConnectionManager.connectToGear360(this, password, new WifiConnectionManager.ConnectionCallback() {
             @Override
             public void onConnected() {
+                Constants.savePassword(MainActivity.this, password);
+
                 runOnUiThread(() -> {
                     btnConnect.setText("Connected!");
-
                     findViewById(R.id.layoutConnectionUI).setVisibility(View.GONE);
                     findViewById(R.id.imgLivePreview).setVisibility(View.VISIBLE);
-
                     startLivePreview();
                 });
             }
@@ -121,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startLivePreview() {
+        stopLivePreview();
+
         Gear360Api api = RetrofitClient.getClient().create(Gear360Api.class);
         OscCommand command = new OscCommand("camera.getLivePreview");
 
@@ -131,17 +145,44 @@ public class MainActivity extends AppCompatActivity {
                     InputStream stream = response.body().byteStream();
                     ImageView imgLivePreview = findViewById(R.id.imgLivePreview);
 
-                    MjpegStreamer streamer = new MjpegStreamer(stream, imgLivePreview, MainActivity.this);
-                    streamer.start();
-                } else {
-                    Toast.makeText(MainActivity.this, "Failed to load stream.", Toast.LENGTH_SHORT).show();
+                    mjpegStreamer = new MjpegStreamer(stream, imgLivePreview, MainActivity.this);
+                    mjpegStreamer.start();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Stream connection failed.", Toast.LENGTH_SHORT).show();
+                if (!isFinishing()) {
+                    Toast.makeText(MainActivity.this, "Preview paused", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isCameraConnected) {
+            startLivePreview();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLivePreview();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopLivePreview();
+        super.onDestroy();
+    }
+
+    private void stopLivePreview() {
+        if (mjpegStreamer != null) {
+            mjpegStreamer.stopStream();
+            mjpegStreamer = null;
+        }
     }
 }
