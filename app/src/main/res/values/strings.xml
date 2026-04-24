@@ -13,4 +13,5 @@
     <string name="about_app">About Gear 360 App</string>
     <string name="take_photo">Take Photo</string>
     <string name="textline">- - - - -</string>
+    <string name="save_to_phone">Save to Phone</string>
 </resources>

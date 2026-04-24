@@ -2,13 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="#000000">
 
-    <ImageView
-        android:id="@+id/imgFullScreen"
+    <com.google.vr.sdk.widgets.pano.VrPanoramaView
+        android:id="@+id/vrPanoramaView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitCenter" />
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,6 +21,6 @@
             android:id="@+id/btnDownload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save to Phone" />
+            android:text="@string/save_to_phone" />
     </LinearLayout>
 </RelativeLayout>

@@ -44,4 +44,7 @@ dependencies {
 
     // Glide for loading image thumbnails from URLs
     implementation 'com.github.bumptech.glide:glide:4.16.0'
+
+    // Google VR SDK for 360 Panorama Viewer
+    implementation 'com.google.vr:sdk-panowidget:1.180.0'
 }
