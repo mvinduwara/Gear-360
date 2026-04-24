@@ -42,6 +42,12 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
                 .load(item.getFileUrl())
                 .centerCrop()
                 .into(holder.imgThumbnail);
+
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(context, com.example.gear360.ui.FullScreenActivity.class);
+            intent.putExtra("IMAGE_URL", item.getFileUrl());
+            context.startActivity(intent);
+        });
     }
 
     @Override
