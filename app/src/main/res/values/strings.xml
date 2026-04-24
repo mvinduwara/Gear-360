@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Gear 360</string>
+    <string name="get_connected">Get connected</string>
+    <string name="gallery">Gallery</string>
+    <string name="gallery_desc">View your pictures and videos.</string>
+    <string name="settings">Settings</string>
+    <string name="tab_phone">PHONE</string>
+    <string name="tab_gear">GEAR 360</string>
+    <string name="no_media_title">No pictures or videos</string>
+    <string name="no_media_desc">After you save pictures or videos from your Gear 360 to your phone, they\'ll appear here.</string>
+    <string name="firmware_version">Firmware version</string>
+    <string name="gallery_settings">Gallery settings</string>
+    <string name="about_app">About Gear 360 App</string>
 </resources>
