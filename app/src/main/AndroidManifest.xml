@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Gear360">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,9 +28,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.GalleryActivity" android:exported="false" />
-        <activity android:name=".ui.SettingsActivity" android:exported="false" />
-        <activity android:name=".ui.FullScreenActivity" android:exported="false" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.GalleryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.FullScreenActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
