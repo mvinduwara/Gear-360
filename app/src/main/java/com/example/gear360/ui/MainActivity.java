@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 api.getCameraInfo().enqueue(new Callback<CameraInfo>() {
                     @Override
                     public void onResponse(Call<CameraInfo> call, Response<CameraInfo> response) {
-                        btnConnect.setText("Get connected"); 
+                        btnConnect.setText("Get connected");
 
                         if (response.isSuccessful() && response.body() != null) {
                             CameraInfo info = response.body();
