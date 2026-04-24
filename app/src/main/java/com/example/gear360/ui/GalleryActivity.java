@@ -15,6 +15,7 @@ import com.example.gear360.model.MediaListResponse;
 import com.example.gear360.model.OscCommand;
 import com.example.gear360.network.Gear360Api;
 import com.example.gear360.network.RetrofitClient;
+import com.example.gear360.utils.MediaAdapter;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private LinearLayout emptyStateLayout;
-    private com.example.gear360.ui.MediaAdapter adapter;
+    private com.example.gear360.utils.MediaAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class GalleryActivity extends AppCompatActivity {
                         emptyStateLayout.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
 
-                        adapter = new com.example.gear360.ui.MediaAdapter(GalleryActivity.this, entries);
+                        adapter = new MediaAdapter(GalleryActivity.this, entries);
                         recyclerView.setAdapter(adapter);
                     }
                 } else {
