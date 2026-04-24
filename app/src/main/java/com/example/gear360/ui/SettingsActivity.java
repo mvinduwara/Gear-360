@@ -1,8 +1,11 @@
 package com.example.gear360.ui;
 
+import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,12 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 finish();
             }
+        });
+
+        LinearLayout rowReset = findViewById(R.id.rowResetConnection);
+
+        rowReset.setOnClickListener(v -> {
+            showResetConfirmation();
         });
         fetchCameraState();
     }
@@ -67,5 +76,25 @@ public class SettingsActivity extends AppCompatActivity {
     private void resetSavedData() {
         getSharedPreferences("Gear360Prefs", MODE_PRIVATE).edit().clear().apply();
         Toast.makeText(this, "Connection data cleared", Toast.LENGTH_SHORT).show();
+    }
+    private void showResetConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle("Reset Connection?")
+                .setMessage("This will clear the saved Wi-Fi password. You will need to re-enter it next time you connect.")
+                .setPositiveButton("Reset", (dialog, which) -> {
+                    performReset();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void performReset() {
+        SharedPreferences prefs = getSharedPreferences("Gear360Prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
+        Toast.makeText(this, "Connection data cleared", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

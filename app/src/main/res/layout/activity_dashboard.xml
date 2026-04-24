@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:background="@color/background_light">
 
     <RelativeLayout
@@ -81,7 +82,7 @@
         android:id="@+id/btnCapture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Take Photo"
+        android:text="@string/take_photo_text"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"/>
 

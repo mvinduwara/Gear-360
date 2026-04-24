@@ -16,4 +16,11 @@
     <string name="save_to_phone">Save to Phone</string>
     <string name="save_to_phone_btn">Save to Phone</string>
     <string name="delete">Delete</string>
+    <string name="reset_camera_connection">Reset Camera Connection</string>
+    <string name="r210glu0aqk1">R210GLU0AQK1</string>
+    <string name="latest_version">Latest version</string>
+    <string name="battery_level">Battery Level</string>
+    <string name="fetching">Fetching...</string>
+    <string name="select">Select</string>
+    <string name="take_photo_text">Take Photo</string>
 </resources>
