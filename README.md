@@ -36,26 +36,5 @@ A professional-grade, open-source Android application for the **Samsung Gear 360
 - **Image Loading:** [Glide](https://github.com/bumptech.glide/glide) for smooth thumbnail caching.
 - **VR Rendering:** [Google VR SDK](https://developers.google.com/vr) for spherical projection.
 
----
 
-## 🚀 Getting Started
-1. **Clone the Project**
-   ```bash
-   git clone [https://github.com/mvinduwara/gear-360.git](https://github.com/mvinduwara/gear-360.git)
-
-   
-2.Open in Android Studio
-Ensure you are using Android Studio Ladybug or newer.
-Sync Gradle (The project uses the Aliyun mirror to fetch the archived VR SDK).
-
-3.Connect & Run
-Turn on your Gear 360.
-Hold the Menu button to enter Wi-Fi mode.
-
-📂 Project Structure
-com.example.gear360
-├── model       # Data models for OSC JSON responses
-├── network     # Retrofit Client, MJPEG Streamer, & Wifi Manager
-├── ui          # Activities (Dashboard, Gallery, Fullscreen)
-└── utils       # Shared Constants & Preference Helpers
 
